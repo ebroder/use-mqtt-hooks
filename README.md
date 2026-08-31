@@ -165,10 +165,16 @@ React's hook idioms.
 
 ```sh
 npm run lint    # tsc, eslint, and prettier in parallel
+npm test        # vitest
 npm run build   # emit dist/
 ```
 
 Run `npm run lint` rather than the individual `lint:*` scripts.
+
+The hook tests run against a real Mosquitto, which the suite starts on an
+ephemeral port and shuts down afterwards. Install it (`brew install mosquitto`
+or `apt-get install mosquitto`), or point `MOSQUITTO_BIN` at a binary somewhere
+else.
 
 ## Acknowledgments
 
