@@ -1,5 +1,7 @@
 # use-mqtt-hooks
 
+[![CI](https://github.com/ebroder/use-mqtt-hooks/actions/workflows/ci.yml/badge.svg)](https://github.com/ebroder/use-mqtt-hooks/actions/workflows/ci.yml)
+
 Hooks for interfacing with [MQTT.js][mqttjs] using React idioms:
 
 - Shared connection management as a React context provider
