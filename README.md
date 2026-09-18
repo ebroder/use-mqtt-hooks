@@ -68,16 +68,21 @@ function Thermostat() {
 | `mqttUrl`      | `string \| undefined`                      | Pass `undefined` to disconnect                           |
 | `clientPrefix` | `string`                                   | Used to generate a random Client ID (computed per-mount) |
 | `will`         | `{ topic, payload, retain? } \| undefined` | Last Will and Testament, published at QoS 1              |
+| `keepalive`    | `number \| undefined`                      | Keep-alive interval in seconds; MQTT.js defaults to 60   |
 
 `mqttUrl` can be unpopulated if either the broker address is not available
 immediately at mount, or if you want to trigger a disconnection. All hooks
 degrade quietly when not connected.
 
-The MQTT protocol only allows specifying a will at connection time, so `will` is
-only evaluated when the connection opens; changing the prop while the connection
-is open won't take effect unless the connection bounces. The client always
-disconnects un-gracefully, so both clean and unclean shutdowns will publish the
-will.
+The MQTT protocol only allows specifying the will and keepalive at connection
+time, so `will` and `keepalive` are only evaluated when the connection opens;
+changing either prop while the connection is open won't take effect unless the
+connection bounces. The client always disconnects un-gracefully, so both clean
+and unclean shutdowns will publish the will.
+
+MQTT.js closes the connection if the broker hasn't responded within 1.5x the
+keepalive, so a lower value means a vanished broker gets noticed sooner (at the
+cost of more ping traffic).
 
 Connections are MQTT v5 with RAP (Retain As Published) enabled, and everything
 the provider sends uses QoS 1.

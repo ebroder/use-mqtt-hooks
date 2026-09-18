@@ -1,6 +1,6 @@
 {
   "name": "use-mqtt-hooks",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React hooks for MQTT: a connection provider, reference-counted subscriptions, and retained-message state",
   "keywords": [
     "mqtt",

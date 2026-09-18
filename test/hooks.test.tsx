@@ -252,3 +252,20 @@ it("publishes the will when the provider unmounts", async () => {
 
   await expect(willed).resolves.toBe("gone");
 });
+
+it("passes the keepalive through to the client", async () => {
+  const Keepalive = () => {
+    const { client } = useMqtt();
+    return <span data-testid="keepalive">{client?.options.keepalive}</span>;
+  };
+
+  render(
+    <MqttProvider mqttUrl={mqttUrl} clientPrefix="test" keepalive={10}>
+      <Keepalive />
+    </MqttProvider>,
+  );
+
+  await waitFor(() => {
+    expect(screen.getByTestId("keepalive").textContent).toBe("10");
+  });
+});

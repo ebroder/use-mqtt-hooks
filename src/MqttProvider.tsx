@@ -18,19 +18,24 @@ export const MqttProvider = ({
   mqttUrl,
   clientPrefix,
   will,
+  keepalive,
   children,
 }: {
   mqttUrl?: string;
   clientPrefix: string;
-  // MQTT only supports setting the will on connect, so this is only read at
-  // connect time; changes to the prop aren't propagated until the next
-  // connection. It's published either by a disconnect or when this component
+  // MQTT only supports setting the will and keepalive on connect, so these are
+  // only read at connect time; changes to the props aren't propagated until
+  // the next connection.
+  //
+  // The will is published either by a disconnect or when this component
   // unmounts.
   will?: {
     topic: string;
     payload: string | Buffer;
     retain?: boolean;
   };
+  // Keep-alive interval in seconds (MQTT.js defaults to 60)
+  keepalive?: number;
   children: ReactNode;
 }) => {
   const [clientRandom] = useState(() =>
@@ -50,9 +55,10 @@ export const MqttProvider = ({
     });
   };
 
-  const readWill = useEffectEvent(
-    (): IClientOptions["will"] => will && { ...will, qos: 1 },
-  );
+  const readConnectOptions = useEffectEvent((): IClientOptions => ({
+    will: will && { ...will, qos: 1 },
+    ...(keepalive === undefined ? {} : { keepalive }),
+  }));
 
   useEffect(() => {
     if (!mqttUrl) {
@@ -62,7 +68,7 @@ export const MqttProvider = ({
     const instance = mqtt.connect(mqttUrl, {
       clientId,
       protocolVersion: 5,
-      will: readWill(),
+      ...readConnectOptions(),
     });
     const publish = async (
       topic: string,
